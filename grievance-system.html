@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Grievance Redressal System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2c5282;
+            --accent: #d97706;
+            --success: #059669;
+            --warning: #dc2626;
+            --light: #f8fafc;
+            --dark: #0f172a;
+            --border: #cbd5e1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background Pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(26, 54, 93, 0.02) 35px, rgba(26, 54, 93, 0.02) 70px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 2rem 0;
+            box-shadow: 0 10px 40px rgba(26, 54, 93, 0.2);
+            position: relative;
+            overflow: hidden;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.05); }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header h1 {
+            font-family: 'Crimson Pro', serif;
+            font-weight: 700;
+            font-size: 2.8rem;
+            color: white;
+            margin: 0;
+            letter-spacing: -0.5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .nav-tabs {
+            border: none;
+            background: white;
+            padding: 1rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.6s ease-out 0.3s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            color: var(--secondary);
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            margin: 0 0.25rem;
+            border-radius: 10px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .nav-tabs .nav-link:hover {
+            background: var(--light);
+            transform: translateY(-2px);
+        }
+
+        .nav-tabs .nav-link.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 4px 15px rgba(26, 54, 93, 0.3);
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 1.5rem;
+            background: white;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            border-radius: 15px 15px 0 0 !important;
+            padding: 1.25rem 1.5rem;
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 0.2rem rgba(44, 82, 130, 0.15);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent) 0%, #ea580c 100%);
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(217, 119, 6, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(217, 119, 6, 0.4);
+            background: linear-gradient(135deg, #ea580c 0%, var(--accent) 100%);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            border: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-block;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-in-progress {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-resolved {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .grievance-item {
+            padding: 1.25rem;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .grievance-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: linear-gradient(180deg, var(--accent), #ea580c);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .grievance-item:hover {
+            border-color: var(--secondary);
+            box-shadow: 0 4px 15px rgba(44, 82, 130, 0.1);
+            transform: translateX(5px);
+        }
+
+        .grievance-item:hover::before {
+            opacity: 1;
+        }
+
+        .grievance-id {
+            font-family: 'Crimson Pro', serif;
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0.5rem;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background: linear-gradient(180deg, var(--secondary), var(--accent));
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 1.5rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -1.5rem;
+            top: 0.25rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: 3px solid white;
+            box-shadow: 0 0 0 2px var(--accent);
+            animation: ping 2s ease-in-out infinite;
+        }
+
+        @keyframes ping {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border: 2px solid #059669;
+            border-radius: 10px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .stats-card {
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 15px;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px) scale(1.02);
+        }
+
+        .stats-card .stats-number {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: block;
+        }
+
+        .stats-card .stats-label {
+            color: var(--secondary);
+            font-weight: 500;
+            margin-top: 0.5rem;
+        }
+
+        .footer {
+            background: var(--dark);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 4rem;
+            text-align: center;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(26, 54, 93, 0.1);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            .nav-tabs .nav-link {
+                font-size: 0.9rem;
+                padding: 0.5rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="container">
+            <h1><i class="bi bi-shield-check"></i> Grievance Redressal Portal</h1>
+            <p>Submit, Track, and Resolve Your Grievances Efficiently</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container my-5" style="position: relative; z-index: 1;">
+        <!-- Navigation Tabs -->
+        <ul class="nav nav-tabs" id="mainTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="submit-tab" data-bs-toggle="tab" data-bs-target="#submit" type="button">
+                    <i class="bi bi-pencil-square"></i> Submit Grievance
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="track-tab" data-bs-toggle="tab" data-bs-target="#track" type="button">
+                    <i class="bi bi-search"></i> Track Status
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard" type="button">
+                    <i class="bi bi-graph-up"></i> Dashboard
+                </button>
+            </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="mainTabsContent">
+            <!-- Submit Grievance Tab -->
+            <div class="tab-pane fade show active" id="submit" role="tabpanel">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-file-earmark-text"></i> Submit New Grievance
+                    </div>
+                    <div class="card-body">
+                        <div id="submitAlert"></div>
+                        <form id="grievanceForm">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="fullName" class="form-label">Full Name *</label>
+                                    <input type="text" class="form-control" id="fullName" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="email" class="form-label">Email Address *</label>
+                                    <input type="email" class="form-control" id="email" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="phone" class="form-label">Phone Number *</label>
+                                    <input type="tel" class="form-control" id="phone" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="category" class="form-label">Grievance Category *</label>
+                                    <select class="form-select" id="category" required>
+                                        <option value="">Select Category</option>
+                                        <option value="Service Quality">Service Quality</option>
+                                        <option value="Billing">Billing/Payment Issues</option>
+                                        <option value="Staff Behavior">Staff Behavior</option>
+                                        <option value="Infrastructure">Infrastructure</option>
+                                        <option value="Documentation">Documentation Issues</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="subject" class="form-label">Subject *</label>
+                                <input type="text" class="form-control" id="subject" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Detailed Description *</label>
+                                <textarea class="form-control" id="description" rows="5" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="priority" class="form-label">Priority Level *</label>
+                                <select class="form-select" id="priority" required>
+                                    <option value="">Select Priority</option>
+                                    <option value="Low">Low</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="High">High</option>
+                                    <option value="Critical">Critical</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="attachment" class="form-label">Attachment (Optional)</label>
+                                <input type="file" class="form-control" id="attachment">
+                                <small class="text-muted">Max file size: 5MB (PDF, JPG, PNG)</small>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-send"></i> Submit Grievance
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Track Status Tab -->
+            <div class="tab-pane fade" id="track" role="tabpanel">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-search"></i> Track Your Grievance
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="trackingId" placeholder="Enter Grievance ID (e.g., GRV-20250001)">
+                            </div>
+                            <div class="col-md-4">
+                                <button class="btn btn-secondary w-100" onclick="trackGrievance()">
+                                    <i class="bi bi-search"></i> Track Status
+                                </button>
+                            </div>
+                        </div>
+                        <div id="trackingResult"></div>
+                    </div>
+                </div>
+
+                <!-- All Grievances -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <i class="bi bi-list-ul"></i> All Submitted Grievances
+                    </div>
+                    <div class="card-body">
+                        <div id="allGrievances"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Tab -->
+            <div class="tab-pane fade" id="dashboard" role="tabpanel">
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="stats-card" style="animation-delay: 0.1s;">
+                            <i class="bi bi-file-earmark-text" style="font-size: 2rem; color: var(--accent);"></i>
+                            <span class="stats-number" id="totalCount">0</span>
+                            <div class="stats-label">Total Grievances</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card" style="animation-delay: 0.2s;">
+                            <i class="bi bi-clock-history" style="font-size: 2rem; color: #eab308;"></i>
+                            <span class="stats-number" id="pendingCount">0</span>
+                            <div class="stats-label">Pending</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card" style="animation-delay: 0.3s;">
+                            <i class="bi bi-arrow-repeat" style="font-size: 2rem; color: #3b82f6;"></i>
+                            <span class="stats-number" id="progressCount">0</span>
+                            <div class="stats-label">In Progress</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card" style="animation-delay: 0.4s;">
+                            <i class="bi bi-check-circle" style="font-size: 2rem; color: var(--success);"></i>
+                            <span class="stats-number" id="resolvedCount">0</span>
+                            <div class="stats-label">Resolved</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-pie-chart"></i> Grievance Analytics
+                    </div>
+                    <div class="card-body">
+                        <canvas id="grievanceChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="container">
+            <p>&copy; 2025 Grievance Redressal System. All rights reserved.</p>
+            <p><small>Contact: support@grievance.gov | Helpline: 1800-123-4567</small></p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Grievance Storage
+        let grievances = JSON.parse(localStorage.getItem('grievances')) || [];
+        let grievanceCounter = parseInt(localStorage.getItem('grievanceCounter')) || 1;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            displayAllGrievances();
+            updateDashboard();
+            initChart();
+        });
+
+        // Form Submission
+        document.getElementById('grievanceForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const grievance = {
+                id: `GRV-${new Date().getFullYear()}${String(grievanceCounter).padStart(4, '0')}`,
+                name: document.getElementById('fullName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                category: document.getElementById('category').value,
+                subject: document.getElementById('subject').value,
+                description: document.getElementById('description').value,
+                priority: document.getElementById('priority').value,
+                status: 'Pending',
+                date: new Date().toLocaleDateString(),
+                timeline: [
+                    {
+                        status: 'Submitted',
+                        date: new Date().toLocaleString(),
+                        note: 'Grievance submitted successfully'
+                    }
+                ]
+            };
+
+            grievances.push(grievance);
+            grievanceCounter++;
+            
+            localStorage.setItem('grievances', JSON.stringify(grievances));
+            localStorage.setItem('grievanceCounter', grievanceCounter);
+
+            // Show success message
+            document.getElementById('submitAlert').innerHTML = `
+                <div class="alert alert-success" role="alert">
+                    <i class="bi bi-check-circle"></i> <strong>Success!</strong> Your grievance has been submitted.
+                    <br><strong>Grievance ID:</strong> ${grievance.id}
+                    <br>Please save this ID for tracking purposes.
+                </div>
+            `;
+
+            // Reset form
+            this.reset();
+
+            // Update displays
+            displayAllGrievances();
+            updateDashboard();
+
+            // Scroll to alert
+            document.getElementById('submitAlert').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+
+        // Track Grievance
+        function trackGrievance() {
+            const trackingId = document.getElementById('trackingId').value.trim().toUpperCase();
+            const result = document.getElementById('trackingResult');
+
+            if (!trackingId) {
+                result.innerHTML = '<div class="alert alert-warning">Please enter a Grievance ID</div>';
+                return;
+            }
+
+            const grievance = grievances.find(g => g.id === trackingId);
+
+            if (!grievance) {
+                result.innerHTML = '<div class="alert alert-warning">Grievance ID not found</div>';
+                return;
+            }
+
+            result.innerHTML = `
+                <div class="grievance-item">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h5 class="grievance-id">${grievance.id}</h5>
+                            <p class="mb-1"><strong>Subject:</strong> ${grievance.subject}</p>
+                            <p class="mb-1"><strong>Category:</strong> ${grievance.category}</p>
+                            <p class="mb-1"><strong>Priority:</strong> <span class="badge bg-${getPriorityColor(grievance.priority)}">${grievance.priority}</span></p>
+                            <p class="mb-1"><strong>Submitted On:</strong> ${grievance.date}</p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <span class="status-badge status-${grievance.status.toLowerCase().replace(' ', '-')}">${grievance.status}</span>
+                        </div>
+                    </div>
+                    <hr>
+                    <h6><strong>Description:</strong></h6>
+                    <p>${grievance.description}</p>
+                    <hr>
+                    <h6><strong>Timeline:</strong></h6>
+                    <div class="timeline">
+                        ${grievance.timeline.map(item => `
+                            <div class="timeline-item">
+                                <strong>${item.status}</strong>
+                                <small class="d-block text-muted">${item.date}</small>
+                                <p class="mb-0">${item.note}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Display All Grievances
+        function displayAllGrievances() {
+            const container = document.getElementById('allGrievances');
+            
+            if (grievances.length === 0) {
+                container.innerHTML = '<p class="text-center text-muted">No grievances submitted yet.</p>';
+                return;
+            }
+
+            container.innerHTML = grievances.map(g => `
+                <div class="grievance-item">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h5 class="grievance-id mb-2">${g.id}</h5>
+                            <p class="mb-1"><strong>Subject:</strong> ${g.subject}</p>
+                            <p class="mb-1"><strong>Category:</strong> ${g.category} | <strong>Priority:</strong> ${g.priority}</p>
+                            <small class="text-muted">Submitted on: ${g.date}</small>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <span class="status-badge status-${g.status.toLowerCase().replace(' ', '-')}">${g.status}</span>
+                            <div class="mt-2">
+                                <button class="btn btn-sm btn-secondary" onclick="updateStatus('${g.id}')">
+                                    <i class="bi bi-arrow-repeat"></i> Update Status
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update Status
+        function updateStatus(id) {
+            const statuses = ['Pending', 'In Progress', 'Resolved', 'Rejected'];
+            const grievance = grievances.find(g => g.id === id);
+            
+            if (!grievance) return;
+
+            const currentIndex = statuses.indexOf(grievance.status);
+            const nextStatus = statuses[(currentIndex + 1) % statuses.length];
+
+            grievance.status = nextStatus;
+            grievance.timeline.push({
+                status: nextStatus,
+                date: new Date().toLocaleString(),
+                note: `Status updated to ${nextStatus}`
+            });
+
+            localStorage.setItem('grievances', JSON.stringify(grievances));
+            displayAllGrievances();
+            updateDashboard();
+        }
+
+        // Update Dashboard
+        function updateDashboard() {
+            const total = grievances.length;
+            const pending = grievances.filter(g => g.status === 'Pending').length;
+            const progress = grievances.filter(g => g.status === 'In Progress').length;
+            const resolved = grievances.filter(g => g.status === 'Resolved').length;
+
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('pendingCount').textContent = pending;
+            document.getElementById('progressCount').textContent = progress;
+            document.getElementById('resolvedCount').textContent = resolved;
+
+            updateChart();
+        }
+
+        // Initialize Chart
+        let grievanceChart;
+        function initChart() {
+            const ctx = document.getElementById('grievanceChart');
+            grievanceChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pending', 'In Progress', 'Resolved', 'Rejected'],
+                    datasets: [{
+                        data: [0, 0, 0, 0],
+                        backgroundColor: ['#fbbf24', '#3b82f6', '#10b981', '#ef4444']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update Chart
+        function updateChart() {
+            if (!grievanceChart) return;
+
+            const pending = grievances.filter(g => g.status === 'Pending').length;
+            const progress = grievances.filter(g => g.status === 'In Progress').length;
+            const resolved = grievances.filter(g => g.status === 'Resolved').length;
+            const rejected = grievances.filter(g => g.status === 'Rejected').length;
+
+            grievanceChart.data.datasets[0].data = [pending, progress, resolved, rejected];
+            grievanceChart.update();
+        }
+
+        // Helper Functions
+        function getPriorityColor(priority) {
+            const colors = {
+                'Low': 'secondary',
+                'Medium': 'warning',
+                'High': 'danger',
+                'Critical': 'dark'
+            };
+            return colors[priority] || 'secondary';
+        }
+    </script>
+</body>
+</html>
